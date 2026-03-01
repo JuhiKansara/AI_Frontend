@@ -7,16 +7,18 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 
     useEffect(() => {
         const fetchNotes = async () => {
+            console.log('Fetching notes from:', `${API_URL}/api/notes`);
             try {
                 const response = await axios.get(`${API_URL}/api/notes`);
                 setNotes(response.data);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to fetch notes. Please ensure the backend is running.');
+                console.error('Fetch error:', err);
+                setError(`Failed to fetch notes: ${err.message}. (URL: ${API_URL})`);
                 setLoading(false);
             }
         };

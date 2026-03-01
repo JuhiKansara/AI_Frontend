@@ -9,10 +9,11 @@ const CreateNote = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Creating note at:', `${API_URL}/api/notes`);
         if (!title.trim() || !content.trim()) {
             setError('Title and content are required');
             return;
@@ -28,7 +29,8 @@ const CreateNote = () => {
             });
             navigate('/');
         } catch (err) {
-            setError('Failed to create note. Please try again.');
+            console.error('Create error:', err);
+            setError(`Failed to create note: ${err.message}. (URL: ${API_URL})`);
             setLoading(false);
         }
     };

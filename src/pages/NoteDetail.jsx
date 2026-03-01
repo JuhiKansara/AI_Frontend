@@ -15,30 +15,34 @@ const NoteDetail = () => {
     const [askingAi, setAskingAi] = useState(false);
     const [aiError, setAiError] = useState('');
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/$/, '');
 
     useEffect(() => {
         const fetchNote = async () => {
+            console.log('Fetching note from:', `${API_URL}/api/notes/${id}`);
             try {
                 const response = await axios.get(`${API_URL}/api/notes/${id}`);
                 setNote(response.data);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to fetch note details.');
+                console.error('Fetch detail error:', err);
+                setError(`Failed to fetch note details: ${err.message}. (URL: ${API_URL})`);
                 setLoading(false);
             }
         };
 
         fetchNote();
-    }, [id]);
+    }, [id, API_URL]);
 
     const handleDelete = async () => {
         if (window.confirm('Are you sure you want to delete this note?')) {
+            console.log('Deleting note at:', `${API_URL}/api/notes/${id}`);
             try {
                 await axios.delete(`${API_URL}/api/notes/${id}`);
                 navigate('/');
             } catch (err) {
-                alert('Failed to delete note');
+                console.error('Delete error:', err);
+                alert(`Failed to delete note: ${err.message}`);
             }
         }
     };
@@ -47,6 +51,7 @@ const NoteDetail = () => {
         e.preventDefault();
         if (!chatMessage.trim()) return;
 
+        console.log('Asking AI at:', `${API_URL}/api/ask`);
         setAskingAi(true);
         setAiError('');
         setAiResponse('');
@@ -61,8 +66,8 @@ const NoteDetail = () => {
             setAiResponse(response.data.answer);
             setResponseTime(response.data.responseTimeMs);
         } catch (err) {
-            setAiError('Failed to get an answer from the AI Tutor.');
-            console.error(err);
+            console.error('AI Ask error:', err);
+            setAiError(`Failed to get an answer from the AI Tutor: ${err.message}`);
         } finally {
             setAskingAi(false);
             setChatMessage('');
