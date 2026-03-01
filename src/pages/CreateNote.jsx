@@ -9,6 +9,7 @@ const CreateNote = () => {
     const [error, setError] = useState('');
 
     const navigate = useNavigate();
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,7 +22,7 @@ const CreateNote = () => {
         setError('');
 
         try {
-            await axios.post('http://localhost:5000/api/notes', {
+            await axios.post(`${API_URL}/api/notes`, {
                 title,
                 content
             });

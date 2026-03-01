@@ -7,10 +7,12 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
     useEffect(() => {
         const fetchNotes = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/api/notes');
+                const response = await axios.get(`${API_URL}/api/notes`);
                 setNotes(response.data);
                 setLoading(false);
             } catch (err) {

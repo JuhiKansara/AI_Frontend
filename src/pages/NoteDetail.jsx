@@ -15,10 +15,12 @@ const NoteDetail = () => {
     const [askingAi, setAskingAi] = useState(false);
     const [aiError, setAiError] = useState('');
 
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
     useEffect(() => {
         const fetchNote = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/notes/${id}`);
+                const response = await axios.get(`${API_URL}/api/notes/${id}`);
                 setNote(response.data);
                 setLoading(false);
             } catch (err) {
@@ -33,7 +35,7 @@ const NoteDetail = () => {
     const handleDelete = async () => {
         if (window.confirm('Are you sure you want to delete this note?')) {
             try {
-                await axios.delete(`http://localhost:5000/api/notes/${id}`);
+                await axios.delete(`${API_URL}/api/notes/${id}`);
                 navigate('/');
             } catch (err) {
                 alert('Failed to delete note');
@@ -51,7 +53,7 @@ const NoteDetail = () => {
         setResponseTime(null);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/ask', {
+            const response = await axios.post(`${API_URL}/api/ask`, {
                 question: chatMessage,
                 noteId: id
             });
