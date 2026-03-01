@@ -18,7 +18,8 @@ const Home = () => {
                 setLoading(false);
             } catch (err) {
                 console.error('Fetch error:', err);
-                setError(`Failed to fetch notes: ${err.message}. (URL: ${API_URL})`);
+                const backendMsg = err.response?.data?.message || err.message;
+                setError(`Failed to fetch notes: ${backendMsg}. (URL: ${API_URL})`);
                 setLoading(false);
             }
         };
